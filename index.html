@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>A little surprise for you</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg1:#fff6fb;--bg2:#efe6ff;--ink:#5a3a66;--soft:#86689a;
+  --pink:#ff8fc7;--lav:#b9a2ff;--glow:rgba(255,143,199,.5);
+  --card:#fffafd;--h1:#e0449b;--h2:#8b5cf6;--star:#ffc94d;--k:1;
+  --k4:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg1:#1c1230;--bg2:#2b1b4a;--ink:#f6e6ff;--soft:#cdb6e6;--glow:rgba(185,162,255,.45);--card:#2f2050;--h1:#ff9ccf;--h2:#c4b0ff}
+}
+:root[data-theme="dark"]{--bg1:#1c1230;--bg2:#2b1b4a;--ink:#f6e6ff;--soft:#cdb6e6;--glow:rgba(185,162,255,.45);--card:#2f2050;--h1:#ff9ccf;--h2:#c4b0ff}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+*,*::before,*::after{box-sizing:border-box}
+body{
+  margin:0;height:100%;overflow:hidden;color:var(--ink);
+  font-family:"Fredoka","Nunito","Trebuchet MS",system-ui,sans-serif;
+  background:linear-gradient(160deg,var(--bg1),var(--bg2)) fixed var(--bg1);
+  -webkit-tap-highlight-color:transparent;
+}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg1);z-index:10}
+
+/* decorations */
+#decor{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.deco{position:absolute;width:calc(var(--s)*var(--k)*1px);aspect-ratio:1;animation:bob var(--dur) ease-in-out var(--del) infinite alternate;opacity:.85}
+.in{width:100%;height:100%}
+.in svg{width:100%;height:100%;display:block;overflow:visible}
+.in.heart{animation:pulse 3.4s ease-in-out infinite}
+.in.flr,.in.petal{animation:sway 5s ease-in-out infinite alternate}
+.in.st{background:var(--star);clip-path:var(--k4);animation:twinkle 4s ease-in-out infinite}
+.in.dot{border-radius:50%;background:radial-gradient(circle,#fff 0,var(--pink) 45%,transparent 70%);animation:glow 3.2s ease-in-out infinite alternate}
+.bf .wl,.bf .wr{transform-box:fill-box;animation:flap 2.2s ease-in-out infinite}
+.bf .wl{transform-origin:100% 50%}.bf .wr{transform-origin:0 50%}
+
+/* screens */
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  padding:max(2rem,env(safe-area-inset-top,0px)) 1.5rem 2rem;overflow-y:auto;z-index:2;
+  opacity:0;visibility:hidden;transform:translateY(14px) scale(.98);
+  transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1),visibility 0s .7s}
+.screen.active{opacity:1;visibility:visible;transform:none;transition:opacity .8s ease .1s,transform .8s cubic-bezier(.2,.8,.2,1) .1s,visibility 0s}
+.screen.leave{transform:translateY(-12px) scale(.97)}
+.active .rise{animation:fadeUp .9s cubic-bezier(.2,.8,.2,1) var(--d,0s) both}
+
+h1,h2{margin:0;font-weight:600;line-height:1.1;letter-spacing:.01em;
+  font-size:clamp(2.4rem,10vw,4.4rem);color:var(--h1);
+  background:linear-gradient(100deg,var(--h1),var(--h2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+h2{font-size:clamp(2rem,8vw,3.4rem)}
+p.sub{margin:1.1rem 0 2.6rem;font-size:clamp(1.05rem,3.6vw,1.3rem);color:var(--soft);max-width:26ch;line-height:1.5}
+.title{position:relative;display:inline-block;padding:0 .2em}
+.title .t{position:absolute;width:calc(var(--s)*1px);aspect-ratio:1;background:var(--star);clip-path:var(--k4);animation:twinkle 3.8s ease-in-out var(--dl) infinite}
+
+/* bubbly buttons */
+.fl{display:inline-block;animation:floatY 4.5s ease-in-out infinite alternate}
+.bubbly{
+  position:relative;font:inherit;font-weight:500;font-size:1.1rem;color:var(--ink);cursor:pointer;
+  padding:1rem 2.2rem;border:3px solid transparent;border-radius:999px;
+  background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(90deg,var(--pink),var(--lav),#ffd1ea,var(--pink)) border-box;
+  background-size:100% 100%,300% 100%;
+  box-shadow:0 8px 24px var(--glow),0 0 0 6px rgba(255,143,199,.08);
+  transform:translate(var(--mx,0),var(--my,0)) scale(var(--sc,1));
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1),box-shadow .3s ease;
+  animation:shimmer 6s linear infinite,glowPulse 3.6s ease-in-out infinite alternate;
+  touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.bubbly:hover{--sc:1.07;box-shadow:0 12px 34px var(--glow),0 0 0 8px rgba(185,162,255,.14)}
+.bubbly:active{--sc:.92;transition-duration:.12s}
+.bubbly:focus-visible{outline:3px solid var(--h2);outline-offset:5px}
+.bubbly::after{content:"";position:absolute;top:-6px;left:8%;width:13px;height:13px;background:var(--star);clip-path:var(--k4);opacity:0;animation:spark 6s linear infinite;pointer-events:none}
+.bubbly.sm{font-size:.98rem;padding:.65rem 1.6rem}
+.bubbly.boing{animation:boing .6s cubic-bezier(.34,1.56,.64,1),shimmer 6s linear infinite}
+
+/* flower */
+.flower{background:none;border:0;padding:0;cursor:pointer;width:clamp(150px,44vw,200px);margin:1.4rem 0 .6rem;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.flower:focus-visible{outline:3px solid var(--h2);outline-offset:6px;border-radius:24px}
+.flower svg{display:block;width:100%;height:auto;overflow:visible;transform-origin:50% 100%;animation:sway 5s ease-in-out infinite alternate}
+.petal{transform-box:fill-box;transform-origin:50% 100%;transform:scale(.35);transition:transform .9s cubic-bezier(.34,1.7,.5,1) calc(var(--i)*70ms)}
+.flower.bloomed .petal{transform:scale(1)}
+.flower.pop svg{animation:boing .6s cubic-bezier(.34,1.56,.64,1)}
+.stage{display:grid;justify-items:center;align-items:start;min-height:9.5rem;width:100%;max-width:24rem}
+.stage>*{grid-area:1/1}
+.hint{margin:.4rem 0 0;color:var(--soft);font-size:1.05rem;transition:opacity .4s ease}
+.hint.gone{opacity:0}
+.bwrap{opacity:0;transform:translateY(12px) scale(.6);transform-origin:50% 0;pointer-events:none;
+  transition:opacity .4s ease,transform .7s cubic-bezier(.34,1.56,.64,1) .35s}
+.bwrap.on{opacity:1;transform:none}
+.bubble{position:relative;background:var(--card);border-radius:30px;padding:1.1rem 1.5rem;line-height:1.5;font-size:1.1rem;
+  box-shadow:0 10px 30px var(--glow);border:2px solid rgba(185,162,255,.35);animation:floatY 4s ease-in-out infinite alternate}
+.bubble::before{content:"";position:absolute;top:-9px;left:50%;width:16px;height:16px;background:var(--card);
+  border-left:2px solid rgba(185,162,255,.35);border-top:2px solid rgba(185,162,255,.35);transform:translateX(-50%) rotate(45deg);border-top-left-radius:5px}
+#again{margin-top:1.4rem;opacity:0;visibility:hidden;transition:opacity .5s ease 1s,visibility 0s 1s}
+#again.on{opacity:1;visibility:visible}
+
+/* sparkle burst */
+.sp{position:fixed;width:var(--sz);height:var(--sz);background:var(--c);clip-path:var(--k4);pointer-events:none;z-index:50;
+  transform:translate(-50%,-50%);animation:burst .95s ease-out forwards}
+.sp.dt{clip-path:none;border-radius:50%}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes floatY{from{transform:translateY(0)}to{transform:translateY(-8px)}}
+@keyframes bob{from{transform:translate(0,0) rotate(-5deg)}to{transform:translate(var(--dx),var(--dy)) rotate(5deg)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.14)}}
+@keyframes sway{from{transform:rotate(-4deg)}to{transform:rotate(4deg)}}
+@keyframes twinkle{0%,55%,100%{opacity:.2;transform:scale(.5) rotate(0)}75%{opacity:1;transform:scale(1) rotate(35deg)}}
+@keyframes glow{from{opacity:.4;transform:scale(.8)}to{opacity:1;transform:scale(1.15)}}
+@keyframes flap{0%,55%,100%{transform:scaleX(1)}25%{transform:scaleX(.4)}40%{transform:scaleX(.9)}}
+@keyframes shimmer{to{background-position:0 0,300% 0}}
+@keyframes glowPulse{from{box-shadow:0 8px 22px var(--glow),0 0 0 6px rgba(255,143,199,.06)}to{box-shadow:0 10px 32px var(--glow),0 0 0 9px rgba(185,162,255,.12)}}
+@keyframes spark{0%,55%{left:8%;opacity:0;transform:scale(0) rotate(0)}62%{opacity:1;transform:scale(1) rotate(0)}88%{left:88%;opacity:1;transform:scale(1) rotate(180deg)}94%,100%{left:92%;opacity:0;transform:scale(0) rotate(220deg)}}
+@keyframes boing{0%{transform:scale(1)}25%{transform:scale(.88,1.1)}50%{transform:scale(1.12,.92)}75%{transform:scale(.97,1.04)}100%{transform:scale(1)}}
+@keyframes burst{0%{opacity:1;transform:translate(-50%,-50%) scale(.2) rotate(0)}20%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--tx)),calc(-50% + var(--ty))) scale(1) rotate(200deg)}}
+
+@media (max-width:600px){:root{--k:.72}}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition-duration:.01ms!important;transition-delay:0s!important}
+  .in.st,.in.dot{opacity:.7}
+}
+</style>
+</head>
+<body>
+
+<div id="decor" aria-hidden="true"></div>
+
+<main>
+  <section class="screen active" id="s1">
+    <h1 class="rise" style="--d:.1s"><span class="title">Hello, lovely
+      <i class="t" style="--s:16;top:-10px;right:-8px;--dl:0s"></i>
+      <i class="t" style="--s:11;top:-2px;left:-10px;--dl:1.3s"></i>
+      <i class="t" style="--s:13;bottom:-8px;right:12%;--dl:2.4s"></i>
+    </span></h1>
+    <p class="sub rise" style="--d:.35s">Someone left something sweet just for you.</p>
+    <div class="rise" style="--d:.6s"><div class="fl"><button class="bubbly" id="open" type="button">Open your little surprise</button></div></div>
+  </section>
+
+  <section class="screen" id="s2" aria-live="polite">
+    <h2 class="rise" style="--d:.1s">Made just for you</h2>
+    <p class="sub rise" style="--d:.3s;margin-bottom:0">Tap the flower and see what grows.</p>
+    <button class="flower rise" id="flower" type="button" aria-pressed="false" aria-label="Tap the flower to bloom" style="--d:.5s">
+      <svg viewBox="0 0 200 300" aria-hidden="true">
+        <path d="M100 100 C96 170 106 230 100 292" fill="none" stroke="#7fd1a4" stroke-width="7" stroke-linecap="round"/>
+        <path d="M100 215 C60 215 44 190 40 170 C76 168 98 186 100 215Z" fill="#9fe0bb"/>
+        <path d="M101 245 C140 245 158 222 162 204 C126 202 104 220 101 245Z" fill="#8bd7ae"/>
+        <g>
+          <g transform="rotate(0 100 100)"><ellipse class="petal" style="--i:0" cx="100" cy="66" rx="17" ry="32" fill="#ff9ccf"/></g>
+          <g transform="rotate(60 100 100)"><ellipse class="petal" style="--i:1" cx="100" cy="66" rx="17" ry="32" fill="#ffb8de"/></g>
+          <g transform="rotate(120 100 100)"><ellipse class="petal" style="--i:2" cx="100" cy="66" rx="17" ry="32" fill="#ff9ccf"/></g>
+          <g transform="rotate(180 100 100)"><ellipse class="petal" style="--i:3" cx="100" cy="66" rx="17" ry="32" fill="#ffb8de"/></g>
+          <g transform="rotate(240 100 100)"><ellipse class="petal" style="--i:4" cx="100" cy="66" rx="17" ry="32" fill="#ff9ccf"/></g>
+          <g transform="rotate(300 100 100)"><ellipse class="petal" style="--i:5" cx="100" cy="66" rx="17" ry="32" fill="#ffb8de"/></g>
+          <circle cx="100" cy="100" r="16" fill="#ffd86b"/>
+          <circle cx="95" cy="96" r="4" fill="#fff" opacity=".6"/>
+        </g>
+      </svg>
+    </button>
+    <div class="stage">
+      <p class="hint" id="hint">Go on, give it a tap ✨</p>
+      <div class="bwrap" id="bwrap"><div class="bubble">You make ordinary days feel like little bits of magic. Never forget how wonderful you are. 💗</div></div>
+    </div>
+    <div id="again"><div class="fl"><button class="bubbly sm" id="replay" type="button">Replay ✨</button></div></div>
+  </section>
+</main>
+
+<script>
+(function(){
+  var RM=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var $=function(s){return document.querySelector(s)};
+
+  /* floating decorations (kept near the edges) */
+  var ART={
+    heart:'<svg viewBox="0 0 24 24"><path fill="#ff8fc7" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>',
+    flr:'<svg viewBox="0 0 24 24"><g fill="#ffb8de"><circle cx="17.5" cy="12" r="4.2"/><circle cx="13.7" cy="17.2" r="4.2"/><circle cx="7.55" cy="15.2" r="4.2"/><circle cx="7.55" cy="8.8" r="4.2"/><circle cx="13.7" cy="6.8" r="4.2"/></g><circle cx="12" cy="12" r="3" fill="#ffd86b"/></svg>',
+    petal:'<svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="5" ry="9" fill="#ffc2e2" transform="rotate(30 12 12)"/></svg>',
+    bf:'<svg viewBox="0 0 24 24"><g class="wl"><ellipse cx="7.5" cy="9" rx="6" ry="4.5" fill="#b9a2ff"/><ellipse cx="8.5" cy="15.5" rx="4" ry="3.4" fill="#ff9ccf"/></g><g class="wr"><ellipse cx="16.5" cy="9" rx="6" ry="4.5" fill="#b9a2ff"/><ellipse cx="15.5" cy="15.5" rx="4" ry="3.4" fill="#ff9ccf"/></g><rect x="11.4" y="6" width="1.2" height="12" rx=".6" fill="#7a5a99"/></svg>',
+    st:'',dot:''
+  };
+  /* type, left%, top%, size, duration(s), delay(s), dx, dy */
+  var D=[
+    ['heart',5,16,26,7,2,6,-14],['heart',86,12,22,8,5,-8,12],['heart',7,80,20,9,1,8,-10],['heart',87,72,28,7.5,3,-6,-14],
+    ['st',10,34,16,6,0,5,-8],['st',80,5,14,7,2,-6,8],['st',92,46,12,5,4,-4,-9],['st',4,56,14,8,1,6,6],['st',70,92,14,6,3,-8,-6],
+    ['flr',5,90,30,9,2,6,-10],['flr',86,88,28,8,4,-6,-12],['flr',89,26,24,10,1,-5,10],
+    ['bf',12,6,30,12,0,40,24],['bf',84,38,30,14,3,-34,30],
+    ['petal',3,22,16,14,2,12,60],['petal',92,58,14,16,6,-14,50],['petal',2,68,14,15,9,10,-55],
+    ['dot',8,62,10,5,0,4,-6],['dot',66,4,9,6,1,-5,6],['dot',93,30,10,5,2,3,8],['dot',28,94,9,7,3,6,-4],['dot',46,95,8,6,4,-6,-5]
+  ];
+  var layer=$('#decor');
+  D.forEach(function(d){
+    var el=document.createElement('div');
+    el.className='deco';
+    el.style.cssText='left:'+d[1]+'%;top:'+d[2]+'%;--s:'+d[3]+';--dur:'+d[4]+'s;--del:-'+d[5]+'s;--dx:'+d[6]+'px;--dy:'+d[7]+'px';
+    el.innerHTML='<div class="in '+d[0]+'">'+ART[d[0]]+'</div>';
+    layer.appendChild(el);
+  });
+
+  /* sparkle burst */
+  var COLS=['#ff8fc7','#b9a2ff','#ffc94d','#8fd8ff','#ffb8de'];
+  function burst(x,y,n){
+    if(RM) return;
+    n=n||16;
+    for(var i=0;i<n;i++){
+      var s=document.createElement('i');
+      var a=Math.PI*2*i/n+Math.random()*.5,dist=42+Math.random()*52,sz=6+Math.random()*9;
+      s.className='sp'+(i%3===0?' dt':'');
+      s.style.cssText='left:'+x+'px;top:'+y+'px;--tx:'+Math.cos(a)*dist+'px;--ty:'+Math.sin(a)*dist+'px;--c:'+COLS[i%COLS.length]+';--sz:'+sz+'px';
+      s.addEventListener('animationend',function(){this.remove()});
+      document.body.appendChild(s);
+    }
+  }
+  function centerOf(el,yf){var r=el.getBoundingClientRect();return [r.left+r.width/2,r.top+r.height*(yf||.5)]}
+  function boing(el,cls){el.classList.remove(cls);void el.offsetWidth;el.classList.add(cls);setTimeout(function(){el.classList.remove(cls)},650)}
+
+  /* cursor-reactive buttons */
+  document.querySelectorAll('.bubbly').forEach(function(b){
+    b.addEventListener('pointermove',function(e){
+      if(e.pointerType!=='mouse') return;
+      var r=b.getBoundingClientRect();
+      var dx=Math.max(-1,Math.min(1,(e.clientX-r.left-r.width/2)/(r.width/2)))*5;
+      var dy=Math.max(-1,Math.min(1,(e.clientY-r.top-r.height/2)/(r.height/2)))*4;
+      b.style.setProperty('--mx',dx+'px');b.style.setProperty('--my',dy+'px');
+    });
+    b.addEventListener('pointerleave',function(){b.style.setProperty('--mx','0px');b.style.setProperty('--my','0px')});
+  });
+
+  var s1=$('#s1'),s2=$('#s2'),flower=$('#flower'),hint=$('#hint'),bwrap=$('#bwrap'),again=$('#again'),busy=false;
+
+  /* open the surprise */
+  $('#open').addEventListener('click',function(){
+    if(busy) return; busy=true;
+    var b=this,c=centerOf(b);
+    boing(b,'boing');
+    burst(c[0],c[1],20);
+    setTimeout(function(){
+      s1.classList.add('leave');s1.classList.remove('active');
+      s2.classList.add('active');
+      setTimeout(function(){s1.classList.remove('leave');busy=false;flower.focus({preventScroll:true})},800);
+    },RM?0:520);
+  });
+
+  /* bloom */
+  flower.addEventListener('click',function(){
+    var c=centerOf(flower,.33);
+    boing(flower,'pop');
+    if(!flower.classList.contains('bloomed')){
+      flower.classList.add('bloomed');
+      flower.setAttribute('aria-pressed','true');
+      flower.setAttribute('aria-label','The flower has bloomed');
+      hint.classList.add('gone');
+      bwrap.classList.add('on');
+      again.classList.add('on');
+      burst(c[0],c[1],22);
+    }else{
+      burst(c[0],c[1],10);
+    }
+  });
+
+  /* replay */
+  $('#replay').addEventListener('click',function(){
+    if(busy) return; busy=true;
+    var c=centerOf(this);
+    boing(this,'boing');burst(c[0],c[1],12);
+    setTimeout(function(){
+      s2.classList.remove('active');
+      s1.classList.add('active');
+      setTimeout(function(){
+        flower.classList.remove('bloomed');
+        flower.setAttribute('aria-pressed','false');
+        flower.setAttribute('aria-label','Tap the flower to bloom');
+        hint.classList.remove('gone');bwrap.classList.remove('on');again.classList.remove('on');
+        busy=false;
+      },800);
+    },RM?0:450);
+  });
+})();
+</script>
+</body>
+</html>
